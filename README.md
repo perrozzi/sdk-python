@@ -39,7 +39,7 @@ Strands Agents is a simple yet powerful SDK that takes a model-driven approach t
 - **Lightweight & Flexible**: Simple agent loop that just works and is fully customizable
 - **Model Agnostic**: Support for Amazon Bedrock, Anthropic, LiteLLM, Llama, Ollama, OpenAI, Writer, and custom providers
 - **Advanced Capabilities**: Multi-agent systems, autonomous agents, and streaming support
-- **Built-in MCP**: Native support for Model Context Protocol (MCP) servers, enabling access to thousands of pre-built tools
+- **Built-in MCP & UTCP**: Native support for Model Context Protocol (MCP) servers and Universal Tool Calling Protocol (UTCP) providers, enabling access to thousands of pre-built tools
 
 ## Quick Start
 
@@ -118,6 +118,28 @@ aws_docs_client = MCPClient(
 with aws_docs_client:
    agent = Agent(tools=aws_docs_client.list_tools_sync())
    response = agent("Tell me about Amazon Bedrock and how to use it with Python")
+```
+
+### UTCP Support
+
+Integrate with Universal Tool Calling Protocol (UTCP) providers for enhanced flexibility:
+
+```python
+from strands import Agent
+from strands.tools.utcp import UTCPClient
+
+# Configure UTCP client with providers.json
+utcp_config = {
+    "providers_file_path": "./providers.json"
+}
+
+async with UTCPClient(utcp_config) as utcp_client:
+    # Search for relevant tools
+    weather_tools = utcp_client.search_tools("weather forecast")
+    
+    # Create agent with UTCP tools
+    agent = Agent(tools=utcp_client.list_tools_sync().items)
+    response = await agent("What's the weather like in London?")
 ```
 
 ### Multiple Model Providers
